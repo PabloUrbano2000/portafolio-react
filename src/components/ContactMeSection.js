@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -12,28 +12,43 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import FullScreenSection from "./FullScreenSection";
 import useSubmit from "../hooks/useSubmit";
-import {useAlertContext} from "../context/alertContext";
+import { useAlertContext } from "../context/alertContext";
 
 const LandingSection = () => {
-  const {isLoading, response, submit} = useSubmit();
+  const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
 
   const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {
-      submit("sssd", values)
+    initialValues: {
+      firstName: "",
+      email: "",
+      type: "hireMe",
+      comment: "",
     },
-    validationSchema: Yup.object({}),
+    onSubmit: (values) => {
+      submit("pablo.test", values);
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("El nombre es requerido."),
+      email: Yup.string()
+        .email("El email no tiene formato válido.")
+        .required("El email es requerido."),
+      type: Yup.string().required("El tipo es requerido."),
+      comment: Yup.string().required(
+        "Deja tu respuesta en la caja de comentarios."
+      ),
+    }),
   });
 
   React.useEffect(() => {
     if (!isLoading && response) {
-      onOpen("success", response);
+      const type = response.type === "success" ? "success" : "error";
+      onOpen(type, response.message);
     }
-  }, [isLoading, response])
+  }, [isLoading, response]);
 
   return (
     <FullScreenSection
@@ -44,31 +59,52 @@ const LandingSection = () => {
     >
       <VStack w="1024px" p={32} alignItems="flex-start">
         <Heading as="h1" id="contactme-section">
-          Contact me
+          Contáctame
         </Heading>
         <Box p={6} rounded="md" w="100%">
           <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
               <FormControl isInvalid={false}>
-                <FormLabel htmlFor="firstName">Name</FormLabel>
+                <FormLabel htmlFor="firstName">Nombre completo</FormLabel>
                 <Input
                   id="firstName"
                   name="firstName"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.firstName}
+                  className={`${formik.errors.firstName ? "border-red" : ""}`}
                 />
-                <FormErrorMessage></FormErrorMessage>
+                {formik.errors.firstName && (
+                  <p style={{ fontSize: 15, color: "red", margin: "2px auto" }}>
+                    {formik.errors.firstName}
+                  </p>
+                )}
               </FormControl>
               <FormControl isInvalid={false}>
-                <FormLabel htmlFor="email">Email Address</FormLabel>
+                <FormLabel htmlFor="email">Tu correo electrónico</FormLabel>
                 <Input
                   id="email"
                   name="email"
                   type="email"
+                  onChange={formik.handleChange}
+                  value={formik.values.email}
+                  className={`${formik.errors.email ? "border-red" : ""}`}
                 />
-                <FormErrorMessage></FormErrorMessage>
+                {formik.errors.email && (
+                  <p style={{ fontSize: 15, color: "red", margin: "2px auto" }}>
+                    {formik.errors.email}
+                  </p>
+                )}
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="type">Type of enquiry</FormLabel>
-                <Select id="type" name="type">
+                <FormLabel htmlFor="type">A qué te dedicas?</FormLabel>
+                <Select
+                  id="type"
+                  name="type"
+                  onChange={formik.handleChange}
+                  value={formik.values.type}
+                  className={`${formik.errors.type ? "border-red" : ""}`}
+                >
                   <option value="hireMe">Freelance project proposal</option>
                   <option value="openSource">
                     Open source consultancy session
@@ -76,17 +112,34 @@ const LandingSection = () => {
                   <option value="other">Other</option>
                 </Select>
               </FormControl>
+              {formik.errors.type && (
+                <p style={{ fontSize: 15, color: "red", margin: "2px auto" }}>
+                  {formik.errors.type}
+                </p>
+              )}
               <FormControl isInvalid={false}>
-                <FormLabel htmlFor="comment">Your message</FormLabel>
+                <FormLabel htmlFor="comment">Tu mensaje</FormLabel>
                 <Textarea
                   id="comment"
                   name="comment"
                   height={250}
+                  onChange={formik.handleChange}
+                  value={formik.values.comment}
+                  className={`${formik.errors.comment ? "border-red" : ""}`}
                 />
-                <FormErrorMessage ></FormErrorMessage>
+                {formik.errors.comment && (
+                  <p style={{ fontSize: 15, color: "red", margin: "2px auto" }}>
+                    {formik.errors.comment}
+                  </p>
+                )}
               </FormControl>
-              <Button type="submit" disabled={isLoading} type="submit" colorScheme="purple" width="full">
-                Submit
+              <Button
+                type="submit"
+                disabled={isLoading}
+                colorScheme="purple"
+                width="full"
+              >
+                Enviar
               </Button>
             </VStack>
           </form>

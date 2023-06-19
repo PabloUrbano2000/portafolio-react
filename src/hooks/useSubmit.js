@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -16,23 +16,23 @@ const useSubmit = () => {
     try {
       await wait(2000);
       if (random < 0.5) {
-        throw new Error("Something went wrong");
+        throw new Error("Algo salió mal!");
       }
       setResponse({
-        type: 'success',
-        message: `Thanks for your submission ${data.firstName}, we will get back to you shortly!`,
-      })
+        type: "success",
+        message: `Gracias por tus comentarios ${data.firstName}, te responderemos a la brevedad!`,
+      });
     } catch (error) {
       setResponse({
-        type: 'error',
-        message: 'Something went wrong, please try again later!',
-      })
+        type: "error",
+        message: "Algo salió mal, por favor intenta nuevamente!",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return { isLoading, response, submit };
-}
+};
 
 export default useSubmit;

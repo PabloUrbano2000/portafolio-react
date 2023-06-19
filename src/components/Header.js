@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -34,25 +34,17 @@ const socials = [
 
 const repositories = [
   {
-    name: "Calculadora App",
-    url: "mailto: hello@example.com",
+    name: "Proyectos",
+    id: "projects",
   },
   {
-    name: "Signwall Repository",
-    url: "https://github.com",
-  },
-  {
-    name:"Ahora ps",
-    url: "https://www.linkedin.com",
-  },
-  {
-    name:"Ahora ps",
-    url: "https://medium.com",
+    name: "Contáctame",
+    id: "contactme",
   },
 ];
 
 const Header = () => {
-  const handleClick = (anchor) => () => {
+  const handleClick = (anchor) => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
     if (element) {
@@ -70,6 +62,7 @@ const Header = () => {
       left={0}
       right={0}
       translateY={0}
+      zIndex={1000}
       transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
@@ -84,20 +77,25 @@ const Header = () => {
         >
           <nav className="nav">
             {/* Add social media links based on the `socials` data */}
-            {
-              socials.map((social, index) => (
-                <a key={social.url} href={social.url} className="link"><FontAwesomeIcon id={social.icon} icon={social.icon} /></a>
-              ))
-            }
+            {socials.map((social, index) => (
+              <a key={social.url} href={social.url} className="link">
+                <FontAwesomeIcon id={social.icon} icon={social.icon} />
+              </a>
+            ))}
           </nav>
-          <nav className="nav">
+          <nav className="nav justify-end">
             <HStack spacing={8}>
               {/* Add links to Projects and Contact me section */}
- {
-              repositories.map((repo, index) => (
-               <p className="link repository"><a key={repo.url} href={repo.url}>{repo.name}</a></p>
-              ))
-            }
+              {repositories.map((repo, index) => (
+                <button
+                  key={repo.id}
+                  type="button"
+                  className="link repository"
+                  onClick={() => handleClick(repo.id)}
+                >
+                  {repo.name}
+                </button>
+              ))}
             </HStack>
           </nav>
         </HStack>
